@@ -9,12 +9,13 @@ go get -u github.com/transloapi/go-translo
 
 # Usage
 
-```sh
+```go
 package main
 
 import (
   "github.com/transloapi/go-translo"
   "context"
+  "fmt"
 )
 
 func main() {
