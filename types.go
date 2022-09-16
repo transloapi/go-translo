@@ -1,4 +1,4 @@
-package transloapi
+package translo
 
 const apiHost string = "https://translo.p.rapidapi.com/" // with trailing slash
 

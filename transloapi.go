@@ -1,5 +1,5 @@
 // Golang library for https://rapidapi.com/armangokka/api/translo
-package transloapi
+package translo
 
 import (
 	"bytes"
