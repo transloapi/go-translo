@@ -56,7 +56,7 @@ func (c API) Translate(ctx context.Context, from, to, text string) (Translation,
 	}
 	var out Translation
 	if err = json.Unmarshal(body, &out); err != nil {
-		return Translation{}, fmt.Errorf("Translate: couldn't decode API's answer: %s", string(body))
+		return Translation{}, fmt.Errorf("Translate: couldn't decode API's answer [%d]: %s->%s %s", resp.StatusCode, from, to, string(body))
 	}
 	if !out.Ok {
 		if out.Error != "" {
@@ -96,7 +96,7 @@ func (c API) BatchTranslate(ctx context.Context, batches []Batch) ([]Batch, erro
 	}
 	var out BatchTranslation
 	if err = json.Unmarshal(body, &out); err != nil {
-		return nil, fmt.Errorf("BatchTranslate: couldn't decode API's answer: %s", string(body))
+		return nil, fmt.Errorf("BatchTranslate: couldn't decode API's answer [%d]: %s", resp.StatusCode, string(body))
 	}
 	if !out.Ok {
 		if out.Error != "" {
@@ -129,7 +129,7 @@ func (c API) Detect(ctx context.Context, text string) (string, error) {
 	}
 	var out Detection
 	if err = json.Unmarshal(body, &out); err != nil {
-		return "", fmt.Errorf("Detect: couldn't decode API's answer: %s", string(body))
+		return "", fmt.Errorf("Detect: couldn't decode API's answer [%d]: text: %s translation: %s", resp.StatusCode, text, string(body))
 	}
 	if !out.Ok {
 		if out.Error != "" {
