@@ -111,6 +111,9 @@ func (c API) BatchTranslate(ctx context.Context, batches []Batch) ([]Batch, erro
 }
 
 func (c API) Detect(ctx context.Context, text string) (string, error) {
+	if len(text) > 200 {
+		text = text[:200]
+	}
 	req, err := http.NewRequestWithContext(ctx, "GET", apiHost+"api/v3/detect?text="+url.PathEscape(text), nil)
 	if err != nil {
 		return "", err
