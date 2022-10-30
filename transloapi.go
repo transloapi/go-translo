@@ -6,6 +6,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"golang.org/x/net/http2"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -16,21 +18,32 @@ type API struct {
 	client      *http.Client
 }
 
-func NewAPI(rapidApiKey string) API {
-	return API{
-		rapidApiKey: rapidApiKey,
-		client:      http.DefaultClient,
+func NewAPI(rapidApiKey string) (API, error) {
+	client := http.DefaultClient
+	transport, err := http2.ConfigureTransports(&http.Transport{})
+	if err != nil {
+		return API{}, err
 	}
-}
-
-func NewAPIWithClient(rapidApiKey string, client *http.Client) API {
-	if client == nil {
-		client = http.DefaultClient
-	}
+	client.Transport = transport
 	return API{
 		rapidApiKey: rapidApiKey,
 		client:      client,
+	}, nil
+}
+
+func NewAPIWithClient(rapidApiKey string, client *http.Client) (API, error) {
+	if client == nil {
+		client = http.DefaultClient
 	}
+	transport, err := http2.ConfigureTransports(&http.Transport{})
+	if err != nil {
+		return API{}, err
+	}
+	client.Transport = transport
+	return API{
+		rapidApiKey: rapidApiKey,
+		client:      client,
+	}, nil
 }
 
 func (c API) Translate(ctx context.Context, from, to, text string) (Translation, error) {
@@ -126,7 +139,7 @@ func (c API) Detect(ctx context.Context, text string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
 	}
